@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type Announcement = {
@@ -8,10 +9,12 @@ export type Announcement = {
   created_at: string;
 };
 
-export async function getLatestAnnouncement(): Promise<Announcement | null> {
-  const supabase = await createSupabaseServerClient();
+export async function getLatestAnnouncement(
+  supabase?: SupabaseClient,
+): Promise<Announcement | null> {
+  const client = supabase ?? (await createSupabaseServerClient());
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from("announcements")
     .select("id, message, version, enabled, created_at")
     .eq("enabled", true)

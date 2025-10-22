@@ -10,15 +10,18 @@ export const metadata = {
 
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
+  const [sessionResponse, announcement] = await Promise.all([
+    supabase.auth.getSession(),
+    getLatestAnnouncement(supabase),
+  ]);
+
   const {
     data: { session },
-  } = await supabase.auth.getSession();
+  } = sessionResponse;
 
   if (!session) {
     redirect("/login");
   }
-
-  const announcement = await getLatestAnnouncement();
 
   return (
     <div className="relative bg-neutral-100 py-12">

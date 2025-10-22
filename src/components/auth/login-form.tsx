@@ -55,7 +55,6 @@ export function LoginForm() {
 
     console.log("SUPABASE_LOGIN_SUCCESS", data.session?.user?.email);
     router.push("/dashboard");
-    router.refresh();
   };
 
   return (
