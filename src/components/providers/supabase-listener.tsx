@@ -11,22 +11,28 @@ type SupabaseListenerProps = {
 export function SupabaseListener({
   serverAccessToken,
 }: SupabaseListenerProps) {
-  const { supabase } = useSupabase();
+  const { supabase, setSession } = useSupabase();
   const router = useRouter();
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+
       if (session?.access_token !== serverAccessToken) {
         router.refresh();
+      }
+
+      if (event === "SIGNED_OUT") {
+        router.replace("/login");
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [router, supabase, serverAccessToken]);
+  }, [router, setSession, supabase, serverAccessToken]);
 
   return null;
 }

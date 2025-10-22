@@ -1,12 +1,13 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type SupabaseContextValue = {
   supabase: SupabaseClient;
   session: Session | null;
+  setSession: (session: Session | null) => void;
 };
 
 const SupabaseContext = createContext<SupabaseContextValue | undefined>(
@@ -23,12 +24,19 @@ export function SupabaseProvider({
   initialSession,
 }: SupabaseProviderProps) {
   const [supabase] = useState(() => createSupabaseBrowserClient());
+  const [session, setSession] = useState<Session | null>(initialSession);
+
+  useEffect(() => {
+    setSession(initialSession);
+  }, [initialSession]);
+
   const value = useMemo(
     () => ({
       supabase,
-      session: initialSession,
+      session,
+      setSession,
     }),
-    [supabase, initialSession],
+    [supabase, session],
   );
 
   return (

@@ -8,6 +8,9 @@ export const metadata = {
   title: "Randevu Paneli",
 };
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
   const [sessionResponse, announcement] = await Promise.all([
