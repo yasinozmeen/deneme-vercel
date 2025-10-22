@@ -56,27 +56,6 @@ export function LoginForm() {
     router.refresh();
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsSubmitting(true);
-    const origin =
-      typeof window !== "undefined" ? window.location.origin : undefined;
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: origin ? `${origin}/auth/callback` : undefined,
-      },
-    });
-
-    if (error) {
-      setFormState((prev) => ({
-        ...prev,
-        error: error.message,
-      }));
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <form
       onSubmit={handleSubmit}
@@ -139,22 +118,11 @@ export function LoginForm() {
         {isSubmitting ? "Giriş yapılıyor…" : "E-posta ile Giriş Yap"}
       </button>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-neutral-400">
         <div className="h-px flex-1 bg-neutral-200" />
-        <span className="text-xs uppercase tracking-wide text-neutral-400">
-          veya
-        </span>
+        <span>Güvenlik için şifrenizi paylaşmayın</span>
         <div className="h-px flex-1 bg-neutral-200" />
       </div>
-
-      <button
-        type="button"
-        onClick={handleGoogleSignIn}
-        disabled={isSubmitting}
-        className="flex items-center justify-center gap-2 rounded-xl border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:border-neutral-400 hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        Google ile giriş yap
-      </button>
     </form>
   );
 }

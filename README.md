@@ -3,7 +3,7 @@
 Supabase Auth, Calendly entegrasyonu ve yönetilebilir popup sistemi içeren Next.js tabanlı randevu platformu. Proje, serverless mimariyle (Vercel Edge + Supabase) minimum maliyetle çalışacak şekilde tasarlandı.
 
 ## Özellikler
-- Oturum açma: Supabase Auth ile e-posta/şifre ve Google OAuth desteği
+- Oturum açma: Supabase Auth ile e-posta/şifre tabanlı kimlik doğrulama
 - Randevu modülü: Calendly inline widget ile kullanıcı içinden randevu planlama
 - Duyuru sistemi: Supabase Postgres `announcements` tablosundan yönetilen popup
 - Sağlık kontrolü: `GET /api/health` Edge Route ile sistem durumu
@@ -45,16 +45,6 @@ create table if not exists announcements (
 ```
 
 > Not: Popup bileşeni, kullanıcı yerelde popup'ı kapattığında `localStorage` üzerine `alert-dismissed-{version}` anahtarı yazar.
-
-## OAuth Geri Dönüş URL'leri
-Google OAuth için Supabase Dashboard → Authentication → Providers menüsünde aşağıdaki yönlendirme URL’sini ekleyin:
-```
-https://<your-domain>/auth/callback
-```
-Yerel geliştirme için:
-```
-http://localhost:3000/auth/callback
-```
 
 ## Deploy
 1. GitHub reposunu Vercel'e bağlayın.
