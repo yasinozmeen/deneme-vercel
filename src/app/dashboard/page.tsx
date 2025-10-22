@@ -22,7 +22,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="relative bg-neutral-100 py-12">
-      {announcement ? <AnnouncementPopup announcement={announcement} /> : null}
+      {announcement ? (
+        <AnnouncementPopup
+          key={announcement.version}
+          announcement={announcement}
+        />
+      ) : null}
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
         <header className="rounded-3xl border border-neutral-200 bg-white p-8 shadow-lg">
           <h1 className="text-2xl font-semibold text-neutral-900">

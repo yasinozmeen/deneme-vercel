@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Announcement } from "@/lib/announcements";
 
 type PopupProps = {
@@ -12,21 +12,13 @@ export function AnnouncementPopup({ announcement }: PopupProps) {
     () => `alert-dismissed-${announcement.version}`,
     [announcement.version],
   );
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const dismissed =
-      typeof window !== "undefined" &&
-      window.localStorage.getItem(storageKey) === "true";
-
-    const update = () => setIsOpen(!dismissed);
-
-    if (typeof queueMicrotask === "function") {
-      queueMicrotask(update);
-    } else {
-      Promise.resolve().then(update).catch(() => update());
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
     }
-  }, [storageKey]);
+    const dismissed = window.localStorage.getItem(storageKey) === "true";
+    return !dismissed;
+  });
 
   const handleClose = () => {
     if (typeof window !== "undefined") {
