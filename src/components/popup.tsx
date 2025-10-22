@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Announcement } from "@/lib/announcements";
 
 type PopupProps = {
@@ -8,10 +8,8 @@ type PopupProps = {
 };
 
 export function AnnouncementPopup({ announcement }: PopupProps) {
-  const storageKey = useMemo(
-    () => `alert-dismissed-${announcement.version}`,
-    [announcement.version],
-  );
+  const dismissalKey = announcement.id ?? announcement.version;
+  const storageKey = `alert-dismissed-${dismissalKey}`;
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
@@ -39,11 +37,11 @@ export function AnnouncementPopup({ announcement }: PopupProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8 backdrop-blur-sm sm:px-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-3 py-6 backdrop-blur-sm sm:px-6 sm:py-8">
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-lg rounded-2xl border border-neutral-200 bg-white p-8 shadow-2xl"
+        className="relative w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl sm:max-w-lg sm:p-8"
       >
         <div className="absolute right-4 top-4">
           <button

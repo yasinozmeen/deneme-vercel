@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CalendlyWidget } from "@/components/dashboard/calendly-widget";
 import { AnnouncementPopup } from "@/components/popup";
 import { getLatestAnnouncement } from "@/lib/announcements";
+import { ScheduleSelector } from "@/components/dashboard/schedule-selector";
 
 export const metadata = {
   title: "Randevu Paneli",
@@ -27,7 +27,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="relative bg-neutral-100 py-12">
+    <div className="relative bg-neutral-100 py-8 sm:py-12">
       {announcement ? (
         <AnnouncementPopup
           key={announcement.version}
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
         />
       ) : null}
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
-        <header className="rounded-3xl border border-neutral-200 bg-white p-8 shadow-lg">
+        <header className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-lg sm:p-8">
           <h1 className="text-2xl font-semibold text-neutral-900">
             Hoş geldin {session.user.email ?? session.user.user_metadata.name} 👋
           </h1>
@@ -45,7 +45,7 @@ export default async function DashboardPage() {
           </p>
         </header>
         <section>
-          <CalendlyWidget />
+          <ScheduleSelector />
         </section>
       </div>
     </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSupabase } from "@/components/providers/supabase-provider";
 import { useState } from "react";
+import { isAdminUser } from "@/lib/auth";
 import clsx from "clsx";
 
 export function Navbar() {
@@ -21,6 +22,8 @@ export function Navbar() {
       setIsLoading(false);
     }
   };
+
+  const isAdmin = session ? isAdminUser(session.user) : false;
 
   return (
     <header className="border-b border-neutral-200 bg-white shadow-sm">
@@ -40,6 +43,19 @@ export function Navbar() {
               )}
             >
               Randevu Paneli
+            </Link>
+          ) : null}
+          {session && isAdmin ? (
+            <Link
+              href="/admin"
+              className={clsx(
+                "hidden rounded-full px-3 py-1.5 text-sm font-medium transition-colors sm:inline-flex",
+                pathname === "/admin"
+                  ? "bg-neutral-900 text-white"
+                  : "text-neutral-600 hover:bg-neutral-100",
+              )}
+            >
+              Admin Paneli
             </Link>
           ) : null}
           {session ? (
