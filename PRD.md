@@ -3,7 +3,7 @@
 🎯 1. Amaç
 
 Kullanıcıların:
-	•	Siteye giriş yaparak (e-posta veya Google ile) kimlik doğrulaması yapabilmesi,
+	•	Siteye giriş yaparak (e-posta ve şifre ile) kimlik doğrulaması yapabilmesi,
 	•	Calendly entegrasyonu üzerinden randevu alabilmesi,
 	•	Zaman zaman gösterilecek bir popup / duyuru / haber bileşenini görmesi,
 	•	Tüm sistemin ucuz, hızlı, serverless (Vercel Edge + Supabase) çalışması hedeflenmektedir.
@@ -14,7 +14,7 @@ Kullanıcıların:
 
 Katman	Teknoloji	Açıklama
 Frontend	Next.js 15 (App Router) + TailwindCSS	Vercel üzerinde deploy edilecek, SSR veya statik sayfa
-Auth Backend	Supabase Auth	E-posta ve Google OAuth ile giriş
+Auth Backend	Supabase Auth	E-posta ve şifre ile giriş
 Database (opsiyonel)	Supabase Postgres	Popup mesajlarını veya admin ayarlarını tutmak için
 Randevu Servisi	Calendly Embed	Kullanıcının randevu alacağı iframe / modal
 Hosting / Deployment	Vercel	Tamamen ücretsiz (free tier)
@@ -27,7 +27,7 @@ Domain	Cloudflare veya Namecheap	randevu.senin-domainin.com alt alan adı öneri
 
 3.1. Kimlik Doğrulama
 	•	Kullanıcı Supabase Auth üzerinden oturum açabilir.
-	•	Login sayfasında e-posta + şifre veya “Google ile giriş yap” seçeneği olur.
+	•	Login sayfasında e-posta + şifre formu bulunur.
 	•	Oturum bilgisi Supabase client SDK’sı ile useSession() hook’u üzerinden alınır.
 	•	Giriş yapmamış kullanıcılar Calendly bileşenini göremez (redirect → /login).
 
@@ -61,7 +61,7 @@ id	message	version	enabled	created_at
 
 Route	Açıklama
 /	Landing page: kısa açıklama, “Giriş Yap / Randevu Al” butonu
-/login	Supabase Auth giriş formu (Google + e-posta)
+/login	Supabase Auth giriş formu (e-posta + şifre)
 /dashboard	Giriş sonrası Calendly embed + popup bileşeni
 /api/health	Basit sağlık kontrol endpoint’i (Vercel edge function)
 
@@ -80,16 +80,22 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 	•	Supabase SDK:
 
-npm install @supabase/supabase-js
+npm install @supabase/supabase-js @supabase/ssr
 
 
 
 5.2. Auth Hook
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-const supabase = createClientComponentClient();
+import { createBrowserClient } from '@supabase/ssr';
 
-const { data: { session } } = await supabase.auth.getSession();
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
+
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 if (!session) redirect('/login');
 
 5.3. Popup Fetch

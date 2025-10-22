@@ -1,4 +1,4 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 
 function getConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,13 +10,10 @@ function getConfig() {
     );
   }
 
-  return { supabaseUrl, supabaseKey };
+  return { supabaseUrl, supabaseKey } as const;
 }
 
 export function createSupabaseBrowserClient() {
   const { supabaseUrl, supabaseKey } = getConfig();
-  return createClientComponentClient({
-    supabaseUrl,
-    supabaseKey,
-  });
+  return createBrowserClient(supabaseUrl, supabaseKey);
 }

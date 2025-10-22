@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerClient } from "@supabase/ssr";
 
 function getConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -11,16 +11,18 @@ function getConfig() {
     );
   }
 
-  return { supabaseUrl, supabaseKey };
+  return { supabaseUrl, supabaseKey } as const;
 }
 
-export function createSupabaseServerClient() {
+export async function createSupabaseServerClient() {
   const { supabaseUrl, supabaseKey } = getConfig();
-  return createServerComponentClient(
-    { cookies },
-    {
-      supabaseUrl,
-      supabaseKey,
+  const cookieStore = await cookies();
+
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      get(name: string) {
+        return cookieStore.get(name)?.value;
+      },
     },
-  );
+  });
 }

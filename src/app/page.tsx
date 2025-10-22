@@ -4,7 +4,7 @@ const features = [
   {
     title: "Supabase Auth",
     description:
-      "E-posta/şifre veya Google OAuth ile güvenli ve hızlı kimlik doğrulama.",
+      "E-posta/şifre temelli güvenli ve hızlı kimlik doğrulama.",
   },
   {
     title: "Calendly Entegrasyonu",
