@@ -18,11 +18,13 @@ export function Navbar() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignOut = async () => {
-    setIsLoading(true);
-    await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      await supabase.auth.signOut();
+      router.replace("/");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
