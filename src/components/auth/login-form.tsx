@@ -38,12 +38,13 @@ export function LoginForm() {
     setIsSubmitting(true);
     setFormState((prev) => ({ ...prev, error: null }));
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: formState.email,
       password: formState.password,
     });
 
     if (error) {
+      console.error("SUPABASE_LOGIN_ERROR", error);
       setFormState((prev) => ({
         ...prev,
         error: error.message,
@@ -52,6 +53,7 @@ export function LoginForm() {
       return;
     }
 
+    console.log("SUPABASE_LOGIN_SUCCESS", data.session?.user?.email);
     router.push("/dashboard");
     router.refresh();
   };
@@ -79,6 +81,7 @@ export function LoginForm() {
           placeholder="ornek@domain.com"
           value={formState.email}
           onChange={handleChange("email")}
+          autoComplete="username"
         />
       </label>
 
@@ -93,6 +96,7 @@ export function LoginForm() {
             placeholder="Şifrenizi girin"
             value={formState.password}
             onChange={handleChange("password")}
+            autoComplete="current-password"
           />
           <button
             type="button"
