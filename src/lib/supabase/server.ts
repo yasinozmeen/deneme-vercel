@@ -23,11 +23,11 @@ export async function createSupabaseServerClient() {
       get(name: string) {
         return cookieStore.get(name)?.value;
       },
-      set(name: string, value: string, options) {
-        cookieStore.set({ name, value, ...options });
+      set() {
+        // Server Components'ta cookies() immutable olduğundan burada yazma işlemi yapamayız.
       },
-      remove(name: string, options) {
-        cookieStore.delete({ name, ...options });
+      remove() {
+        // Aynı şekilde silme işlemi de desteklenmiyor; Supabase client tarafında oturum kapanınca çerez süresi dolar.
       },
     },
   });

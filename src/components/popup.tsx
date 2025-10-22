@@ -43,29 +43,25 @@ export function AnnouncementPopup({ announcement }: PopupProps) {
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl"
+        className="relative w-full max-w-lg rounded-2xl border border-neutral-200 bg-white p-8 shadow-2xl"
       >
-        <div className="flex items-start gap-3">
-          <div className="mt-1 h-10 w-10 rounded-full bg-neutral-900/90 text-white">
-            <div className="flex h-full w-full items-center justify-center text-sm font-semibold">
-              {announcement.version}
-            </div>
-          </div>
-          <div className="flex-1 text-sm text-neutral-700">
-            <p className="whitespace-pre-line">{announcement.message}</p>
-            <p className="mt-2 text-xs font-medium uppercase tracking-wide text-neutral-400">
-              Son güncelleme:{" "}
-              {new Date(announcement.created_at).toLocaleDateString("tr-TR")}
-            </p>
-          </div>
+        <div className="absolute right-4 top-4">
           <button
             type="button"
             onClick={handleClose}
-            className="ml-2 text-lg font-semibold text-neutral-400 transition hover:text-neutral-600"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 text-base font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-700"
             aria-label="Popup'ı kapat"
           >
             ×
           </button>
+        </div>
+        <div className="pr-14">
+          <h2 className="text-xl font-semibold text-neutral-900">
+            {announcement.title ?? "Duyuru"}
+          </h2>
+          <p className="mt-4 whitespace-pre-line text-sm text-neutral-700">
+            {announcement.message}
+          </p>
         </div>
       </div>
     </div>

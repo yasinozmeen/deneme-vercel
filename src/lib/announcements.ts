@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type Announcement = {
   id: string;
+  title: string | null;
   message: string;
   version: string;
   enabled: boolean;
@@ -16,7 +17,7 @@ export async function getLatestAnnouncement(
 
   const { data, error } = await client
     .from("announcements")
-    .select("id, message, version, enabled, created_at")
+    .select("id, title, message, version, enabled, created_at")
     .eq("enabled", true)
     .order("created_at", { ascending: false })
     .limit(1)
