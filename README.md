@@ -3,17 +3,11 @@
 Supabase Auth, Calendly entegrasyonu ve yönetilebilir popup sistemi içeren Next.js tabanlı randevu platformu. Proje, serverless mimariyle (Vercel Edge + Supabase) minimum maliyetle çalışacak şekilde tasarlandı.
 
 ## Özellikler
-- Oturum açma: Supabase Auth ile e-posta/şifre tabanlı kimlik doğrulama
-- Randevu modülü: Calendly inline widget ile kullanıcı içinden randevu planlama
-- Duyuru sistemi: Supabase Postgres `announcements` tablosundan yönetilen popup
-- Sağlık kontrolü: `GET /api/health` Edge Route ile sistem durumu
-- Tailwind CSS (v4) ile responsive UI
-
-## Teknoloji Yığını
-- Next.js 16 (App Router, TypeScript)
-- Tailwind CSS 4
-- Supabase Auth & Postgres
-- React Calendly (`InlineWidget`)
+- Supabase Auth ile e-posta/şifre tabanlı oturum açma (`/login`)
+- Giriş yapan kullanıcılar için Calendly içeren randevu paneli (`/dashboard`)
+- Supabase Postgres üzerinde yönetilen popup duyuruları
+- `GET /api/health` ile edge sağlık kontrolü
+- Tailwind CSS (v4) tabanlı arayüz
 
 ## Kurulum
 1. Bağımlılıkları yükleyin:

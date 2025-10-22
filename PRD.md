@@ -60,7 +60,7 @@ id	message	version	enabled	created_at
 🧩 4. Sayfa Akışı
 
 Route	Açıklama
-/	Landing page: kısa açıklama, “Giriş Yap / Randevu Al” butonu
+/	Login veya dashboard sayfasına yönlendirme
 /login	Supabase Auth giriş formu (e-posta + şifre)
 /dashboard	Giriş sonrası Calendly embed + popup bileşeni
 /api/health	Basit sağlık kontrol endpoint’i (Vercel edge function)

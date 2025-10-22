@@ -6,11 +6,6 @@ import { useSupabase } from "@/components/providers/supabase-provider";
 import { useState } from "react";
 import clsx from "clsx";
 
-const links = [
-  { href: "/", label: "Anasayfa", auth: "any" as const },
-  { href: "/dashboard", label: "Randevu", auth: "protected" as const },
-];
-
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -34,25 +29,19 @@ export function Navbar() {
           Randevu Platformu
         </Link>
         <div className="flex items-center gap-4">
-          <ul className="hidden items-center gap-4 text-sm font-medium text-neutral-600 sm:flex">
-            {links
-              .filter((link) => link.auth === "any" || session)
-              .map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className={clsx(
-                      "rounded-full px-3 py-1.5 transition-colors",
-                      pathname === link.href
-                        ? "bg-neutral-900 text-white"
-                        : "hover:bg-neutral-100",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-          </ul>
+          {session ? (
+            <Link
+              href="/dashboard"
+              className={clsx(
+                "hidden rounded-full px-3 py-1.5 text-sm font-medium transition-colors sm:inline-flex",
+                pathname === "/dashboard"
+                  ? "bg-neutral-900 text-white"
+                  : "text-neutral-600 hover:bg-neutral-100",
+              )}
+            >
+              Randevu Paneli
+            </Link>
+          ) : null}
           {session ? (
             <button
               type="button"
