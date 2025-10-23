@@ -8,6 +8,10 @@ type Schedule = {
   title: string;
 };
 
+type ScheduleSelectorProps = {
+  remainingCredits: number;
+};
+
 const SCHEDULES: Schedule[] = [
   { id: "foundation", title: "Temeller Altyapı Oluşturma" },
   { id: "product", title: "Ürün" },
@@ -17,10 +21,12 @@ const SCHEDULES: Schedule[] = [
   { id: "account", title: "Hesap Yönetimi" },
 ];
 
-export function ScheduleSelector() {
+export function ScheduleSelector({ remainingCredits }: ScheduleSelectorProps) {
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null,
   );
+
+  const hasCredits = remainingCredits > 0;
 
   useEffect(() => {
     if (!selectedSchedule) {
@@ -63,11 +69,19 @@ export function ScheduleSelector() {
             <button
               key={schedule.id}
               type="button"
-              onClick={() => setSelectedSchedule(schedule)}
+              onClick={() => {
+                if (!hasCredits) {
+                  return;
+                }
+                setSelectedSchedule(schedule);
+              }}
+              disabled={!hasCredits}
               className={`group flex h-full flex-col overflow-hidden rounded-3xl border bg-white text-left shadow-lg transition ${
                 isActive
                   ? "border-rose-500 shadow-rose-200"
-                  : "border-neutral-200 hover:-translate-y-1 hover:shadow-xl"
+                  : hasCredits
+                    ? "border-neutral-200 hover:-translate-y-1 hover:shadow-xl"
+                    : "border-neutral-200 opacity-60 cursor-not-allowed"
               }`}
             >
               <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center sm:px-8 sm:py-10">
@@ -87,7 +101,27 @@ export function ScheduleSelector() {
       </div>
 
       <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-6 text-center text-sm text-neutral-500 sm:p-8">
-        Bir başlık seçtiğinde randevu takvimi modal olarak açılacak.
+        {hasCredits
+          ? "Bir başlık seçtiğinde randevu takvimi modal olarak açılacak."
+          : "Toplantı hakkınız kalmadı. Lütfen yöneticinizle iletişime geçin."}
+      </div>
+
+      <div className="rounded-3xl border border-neutral-200 bg-white p-4 text-sm text-neutral-700 shadow-lg sm:p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-neutral-500">
+              Kalan Toplantı Hakkı
+            </p>
+            <p className="text-3xl font-semibold text-neutral-900">
+              {remainingCredits}
+            </p>
+          </div>
+          {!hasCredits ? (
+            <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+              Hak Tükenmiş
+            </span>
+          ) : null}
+        </div>
       </div>
 
       {selectedSchedule ? (

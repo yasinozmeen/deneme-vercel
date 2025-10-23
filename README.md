@@ -5,6 +5,7 @@ Supabase Auth, Calendly entegrasyonu ve yönetilebilir popup sistemi içeren Nex
 ## Özellikler
 - Supabase Auth ile e-posta/şifre tabanlı oturum açma (`/login`)
 - Giriş yapan kullanıcılar için Calendly içeren randevu paneli (`/dashboard`)
+- Varsayılan 100 toplantı hakkı, Calendly webhook'uyla otomatik düşer
 - Supabase Postgres üzerinde yönetilen popup duyuruları
 - `GET /api/health` ile edge sağlık kontrolü
 - Tailwind CSS (v4) tabanlı arayüz
@@ -19,6 +20,8 @@ Supabase Auth, Calendly entegrasyonu ve yönetilebilir popup sistemi içeren Nex
    NEXT_PUBLIC_SUPABASE_URL="https://<proje-id>.supabase.co"
    NEXT_PUBLIC_SUPABASE_ANON_KEY="<anon-key>"
    NEXT_PUBLIC_CALENDLY_URL="https://calendly.com/yourname/30min"
+   SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
+   CALENDLY_WEBHOOK_SIGNING_KEY="<calendly-webhook-signing-key>"
    ```
 3. Geliştirme sunucusunu başlatın:
    ```bash
@@ -42,8 +45,10 @@ create table if not exists announcements (
 
 ## Deploy
 1. GitHub reposunu Vercel'e bağlayın.
-2. Vercel ortam değişkenlerini (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_CALENDLY_URL`) tanımlayın.
-3. Deploy sonrasında `https://<proje-adı>.vercel.app/api/health` endpoint’i çalışıyor olmalı.
+2. `supabase/migrations/20251023_meeting_credits.sql` dosyasındaki SQL'i Supabase projenizde çalıştırın (Auth → SQL Editor veya CLI).
+3. Vercel ortam değişkenlerini (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_CALENDLY_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CALENDLY_WEBHOOK_SIGNING_KEY`) tanımlayın.
+4. Calendly hesabınızda webhook'u `https://<proje-adı>.vercel.app/api/calendly/webhook` adresine yönlendirin ve aynı signing key'i kullanın.
+5. Deploy sonrasında `https://<proje-adı>.vercel.app/api/health` endpoint’i çalışıyor olmalı.
 
 ## Kaynaklar
 - [PRD.md](PRD.md) – Ürün gereksinim dokümanı

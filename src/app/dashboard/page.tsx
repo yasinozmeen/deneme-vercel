@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AnnouncementPopup } from "@/components/popup";
 import { getLatestAnnouncement } from "@/lib/announcements";
 import { ScheduleSelector } from "@/components/dashboard/schedule-selector";
+import { getUserMeetingCredits } from "@/lib/meeting-credits";
 
 export const metadata = {
   title: "Randevu Paneli",
@@ -26,6 +27,8 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const remainingCredits = await getUserMeetingCredits(supabase, session.user.id);
+
   return (
     <div className="relative bg-neutral-100 py-8 sm:py-12">
       {announcement ? (
@@ -45,7 +48,7 @@ export default async function DashboardPage() {
           </p>
         </header>
         <section>
-          <ScheduleSelector />
+          <ScheduleSelector remainingCredits={remainingCredits} />
         </section>
       </div>
     </div>

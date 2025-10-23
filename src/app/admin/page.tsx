@@ -4,7 +4,15 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isAdminUser } from "@/lib/auth";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { CreateAnnouncementForm } from "@/components/admin/create-announcement-form";
-import { toggleAnnouncementAction } from "@/app/admin/actions";
+import {
+  toggleAnnouncementAction,
+  updateMeetingCreditsAction,
+} from "@/app/admin/actions";
+import {
+  DEFAULT_MEETING_CREDIT,
+  listMeetingCredits,
+  type MeetingCreditRow,
+} from "@/lib/meeting-credits";
 
 export const metadata = {
   title: "Admin Paneli",
@@ -58,6 +66,11 @@ export default async function AdminPage() {
   }
 
   const users = usersData?.users ?? [];
+
+  const meetingCreditRows = await listMeetingCredits(service);
+  const meetingCreditsMap = new Map<string, MeetingCreditRow>(
+    meetingCreditRows.map((row) => [row.user_id, row]),
+  );
 
   const formatter = new Intl.DateTimeFormat("tr-TR", {
     dateStyle: "medium",
@@ -179,11 +192,19 @@ export default async function AdminPage() {
                     <th className="px-3 py-2">E-posta</th>
                     <th className="px-3 py-2">Oluşturulma</th>
                     <th className="px-3 py-2">Son Giriş</th>
+                    <th className="px-3 py-2 text-center">Toplantı Hakkı</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-100 bg-white">
-                  {users.map((user) => (
-                    <tr key={user.id} className="align-top">
+                  {users.map((user) => {
+                    const meetingCredit = meetingCreditsMap.get(user.id);
+                    const remainingCredits = meetingCredit?.remaining ?? DEFAULT_MEETING_CREDIT;
+                    const updatedLabel = meetingCredit?.updated_at
+                      ? `Son güncelleme: ${formatter.format(new Date(meetingCredit.updated_at))}`
+                      : "Varsayılan değer";
+
+                    return (
+                      <tr key={user.id} className="align-top">
                       <td className="px-3 py-3 text-neutral-900">
                         {getDisplayName(user)}
                       </td>
@@ -200,8 +221,38 @@ export default async function AdminPage() {
                           ? formatter.format(new Date(user.last_sign_in_at))
                           : "—"}
                       </td>
+                      <td className="px-3 py-3">
+                        <form
+                          action={updateMeetingCreditsAction}
+                          className="flex flex-col gap-2 text-sm text-neutral-700 sm:flex-row sm:items-center"
+                        >
+                          <input type="hidden" name="userId" value={user.id} />
+                          <div className="flex items-center gap-2">
+                            <label className="flex items-center gap-2">
+                              <span className="text-xs uppercase tracking-wide text-neutral-500">
+                                Kalan
+                              </span>
+                              <input
+                                type="number"
+                                name="remaining"
+                                min={0}
+                                defaultValue={remainingCredits}
+                                className="w-24 rounded-lg border border-neutral-300 px-2 py-1 text-right text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                              />
+                            </label>
+                            <button
+                              type="submit"
+                              className="rounded-full border border-neutral-300 px-3 py-1 text-xs font-medium text-neutral-700 transition hover:border-neutral-400 hover:bg-neutral-100"
+                            >
+                              Kaydet
+                            </button>
+                          </div>
+                          <span className="text-xs text-neutral-400">{updatedLabel}</span>
+                        </form>
+                      </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

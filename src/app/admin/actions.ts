@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { isAdminUser } from "@/lib/auth";
+import { setUserMeetingCredits } from "@/lib/meeting-credits";
 
 export type AnnouncementFormState = {
   error: string | null;
@@ -95,6 +96,40 @@ export async function toggleAnnouncementAction(
     console.error("ANNOUNCEMENT_TOGGLE_ERROR", error);
     throw new Error("Duyuru güncellenirken bir hata oluştu.");
   }
+
+  revalidatePath("/admin");
+  revalidatePath("/dashboard");
+}
+
+export async function updateMeetingCreditsAction(formData: FormData): Promise<void> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session || !isAdminUser(session.user)) {
+    throw new Error("Bu işlemi gerçekleştirmek için yetkiniz yok.");
+  }
+
+  const userId = formData.get("userId");
+  const value = formData.get("remaining");
+
+  if (typeof userId !== "string" || userId.length === 0) {
+    throw new Error("Kullanıcı bulunamadı.");
+  }
+
+  const parsed = Number(value);
+
+  if (!Number.isFinite(parsed) || Number.isNaN(parsed)) {
+    throw new Error("Lütfen geçerli bir sayı girin.");
+  }
+
+  if (parsed < 0) {
+    throw new Error("Toplantı hakkı negatif olamaz.");
+  }
+
+  const service = createSupabaseServiceClient();
+  await setUserMeetingCredits(service, userId, Math.floor(parsed));
 
   revalidatePath("/admin");
   revalidatePath("/dashboard");
